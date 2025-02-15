@@ -69,7 +69,13 @@ public class Player {
     //Attacking the enemy using the last added item from the inventory
     
     //Reducing the knight's health when taken damage
-    
+    public void takeDamage(int amount) {
+        health -= amount;
+        if (health < 0) {
+            health = 0;
+        }
+        System.out.println(name + " takes " + amount + " damage. Remaining health: " + health);
+    }
     //Check to see if the knight is defeated (is health below 0)
     public boolean isDefeated() {
         return health<=0;
