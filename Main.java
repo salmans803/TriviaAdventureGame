@@ -72,7 +72,6 @@ class SaveThePrincess {
         if (cursedForest.attemptExit(direction, scanner, player)) {
             System.out.println("You have successfully exited the forest! Moving to the Tower of Mystery...");
             TowerOfMystery tower = new TowerOfMystery(2);
-            tower.enterTower(player);
         } else {
             System.out.println("You failed to leave the forest. Please Try Again.");
         }
