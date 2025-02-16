@@ -6,17 +6,19 @@
 import java.util.Scanner;
 
 // Main class
-class SaveThePrincess {
+public class SaveThePrincess {
     private Player player;
     private Scanner scanner;
     private CursedForest cursedForest;
     private TowerOfMystery tower;
+    private CreepyDungeon dungeon; 
 
     // Constructor initializes game elements
     public SaveThePrincess() {
         scanner = new Scanner(System.in);
         cursedForest = new CursedForest();
-        this.tower = new TowerOfMystery();
+        tower = new TowerOfMystery();
+        dungeon = new CreepyDungeon();  // Now a top-level class
     }
 
     // Method to start the game
@@ -69,7 +71,7 @@ class SaveThePrincess {
             System.out.print("Which direction would you like to go? (north/south/east/west): ");
             String direction = scanner.nextLine().trim().toLowerCase();
 
-            // Trivia challenge
+            // Trivia challenge in the forest
             if (cursedForest.attemptExit(direction, scanner)) {
                 System.out.println("You have successfully exited the forest! Moving to the Tower of Mystery...");
             } else {
@@ -102,7 +104,29 @@ class SaveThePrincess {
                 System.out.println("Restarting the game...\n");
                 continue; // Restart the main game loop
             }
+            
+            // Enter the Creepy Dungeon
+            System.out.println("You enter the dark, creepy dungeon. Your sword glows in your hand. The reflection of the princess past the enemies shining back at her.");
+            
+            // Fight through five enemies
+            boolean fightSuccess = true;
+            for (int enemy = 1; enemy <= 5; enemy++) {
+                if (!dungeon.fightEnemy(enemy, scanner)) {
+                    System.out.println("You failed to defeat an enemy. Restarting the game...\n");
+                    fightSuccess = false;
+                    break; // Break out of the enemy loop to restart the game
+                }
+            }
+            if (!fightSuccess) {
+                continue;
+            }
 
+            // Interact with the axe (Last part)
+            boolean axePicked = dungeon.interactWithAxe(scanner);
+            if (!axePicked) {
+                continue;  // Restart the game loop if axe was not picked up
+            }
+            
             // If everything is successful and the game ends
             System.out.println("Congratulations! You saved the princess!");
             break; // Exit the main game loop (end the game)
@@ -119,7 +143,7 @@ class SaveThePrincess {
 
 class Player {
     private String name; //Player's name
-    private int position; //Player's location name
+    private int position; //Player's location
     private String[] inventory; //fixed size inventory
     private int inventorySize;
     private int health;
@@ -160,7 +184,7 @@ class Player {
             position--;
     }
 
-    //Checking if the player answered the question correctly
+    // Checking if the player answered the question correctly
     public boolean answerQuestion(String userAnswer, Question question) {
         return question.checkAnswer(userAnswer);
     }
@@ -174,19 +198,17 @@ class Player {
         }
     }
 
-    //Increasing count of wrong answers given by the player
+    // Increasing count of wrong answers given by the player
     public void increaseWrongAnswer() {
         wrongAnswers++;
     }
 
-    //Retriving the no. of wrong answers given
+    // Retrieving the number of wrong answers given
     public int getWrongAnswers() {
         return wrongAnswers;
     }
 
-    //Attacking the enemy using the last added item from the inventory
-    
-    //Reducing the knight's health when taken damage
+    // Reducing the knight's health when taking damage
     public void takeDamage(int amount) {
         health -= amount;
         if (health < 0) {
@@ -195,19 +217,20 @@ class Player {
         System.out.println(name + " takes " + amount + " damage. Remaining health: " + health);
     }
 
-    //Check to see if the knight is defeated (is health below 0)
+    // Check to see if the knight is defeated (health at or below 0)
     public boolean isDefeated() {
         return health <= 0;
     }
 }
 
-class Object {
+// A simple class representing an object (avoid using the name "Object" as it conflicts with java.lang.Object)
+class GameObject {
     private String name;
     private String purpose;
 
-    public Object() {}
+    public GameObject() {}
 
-    public Object(String name, String purpose) {
+    public GameObject(String name, String purpose) {
         this.name = name;
         this.purpose = purpose;
     }
@@ -350,6 +373,7 @@ class CursedForest {
     }
 }
 
+// Tower of Mystery class
 class TowerOfMystery {
     private String name;
     private String description;
@@ -409,6 +433,7 @@ class TowerOfMystery {
             return false;  // Game over if the answer is incorrect
         }
     }
+
     // Method to allow player to pick up the key
     public void askToPickUpKey(Scanner scanner) {
         System.out.println("You found a mysterious key! Do you want to pick it up? (yes/no)");
@@ -419,7 +444,7 @@ class TowerOfMystery {
             System.out.println("You feel hope blooming in your chest, the princess is near!");
         } else {
             System.out.println("You leave the key where it is.");
-            System.out.println("Without the key, you cannot enter the dungeon to save princess (DUH). Restarting the game...");
+            System.out.println("Without the key, you cannot enter the dungeon to save the princess (DUH). Restarting the game...");
         }
     }
 
@@ -434,12 +459,107 @@ class TowerOfMystery {
                 return true;
             } else {
                 System.out.println("The dungeon is locked. You need a key to enter.");
+                System.out.println("Restarting the game...");
                 return false;
             }
         } else {
             System.out.println("You decide to stay outside for now.");
+            System.out.println("Restarting the game...");
             return false;
         }
     }
 }
 
+// Creepy Dungeon class (now a top-level class)
+class CreepyDungeon {
+    private boolean hasSword;
+    private boolean hasAxe;
+
+    // Constructor initializes the player's inventory
+    public CreepyDungeon() {
+        hasSword = true; // Player starts with the sword from the Cursed Forest
+        hasAxe = false;
+    }
+
+    // Method to fight an enemy using trivia
+    public boolean fightEnemy(int enemyNumber, Scanner scanner) {
+        String question = "";
+        String correctAnswer = "";
+
+        // Assigning questions to each enemy
+        switch (enemyNumber) {
+            case 1:
+                question = "What is the capital of the Germany?";
+                correctAnswer = "Berlin";
+                break;
+            case 2:
+                question = "How many legs does an ant have?";
+                correctAnswer = "6";
+                break;
+            case 3:
+                question = "What is the largest planet in our solar system?";
+                correctAnswer = "Jupiter";
+                break;
+            case 4:
+                question = "Who painted the Mona Lisa?";
+                correctAnswer = "Da Vinci";
+                break;
+            case 5:
+                question = "What is the boiling point of water in Celsius? HINT: 50 + 50";
+                correctAnswer = "100";
+                break;
+            default:
+                System.out.println("No enemy to fight.");
+                return false;
+        }
+
+        // Asking the player the question along with enemy appearance
+        System.out.println("An evil enemy stands before you! To defeat it, answer this question:");
+        System.out.println(question);
+        String answer = scanner.nextLine().trim();
+
+        // Checking if the answer is correct
+        if (answer.equalsIgnoreCase(correctAnswer)) {
+            if (enemyNumber == 5) {
+                System.out.println("Correct! You slay the final enemy, but your sword shatters into pieces!");
+                hasSword = false;
+            } else {
+                System.out.println("Correct! You slay the enemy with your sword.");
+            }
+            return true;
+        } else {
+            System.out.println("Wrong answer! The enemy overpowers you. Restarting the game...");
+            return false;
+        }
+    }
+
+    // Method to interact with the axe and free the princess
+    public boolean interactWithAxe(Scanner scanner) {
+        System.out.println("Without the sword, you find yourself in a predicament");
+        System.out.println("OH! But suddenly you spot a massive sharp axe on the ground. Maybe you can use it.");
+        System.out.println("Do you want to pick it up? (yes/no)");
+        String response = scanner.nextLine().trim().toLowerCase();
+
+        if (response.equals("yes")) {
+            hasAxe = true;
+            System.out.println("You pick up the axe. It feels sharp and powerful.");
+            freePrincess(scanner);
+            return true;
+        } else {
+            System.out.println("You ignore the axe. Without it, you cannot free the princess.");
+            System.out.println("Restarting the game...\n");
+            return false;
+        }
+    }
+
+    // Method to actually free the princess
+    public void freePrincess(Scanner scanner) {
+        if (hasAxe) {
+            System.out.println("You use the axe to slice through the ropes tying the princess.");
+            System.out.println("She is free! You have completed the adventure!");
+        } else {
+            System.out.println("You need something sharp to cut the ropes! Restarting the game...\n");
+        }
+    }
+}
+   
