@@ -1,15 +1,16 @@
-// Karen Wu, Salman, Asia, Lela, and Daniella ABotsi
+// Karen Wu, Salman Syed Ahmed, Asia Scholbe, Lelaye Nwandu, and Daniella Abotsi
 // IS 247: PROGRAMMING PROJECT 1
 // GROUP PROJECT: ADVENTURE CODE
 // GAME NAME: SAVING THE PRINCESS
 
 import java.util.Scanner;
 
-// Main game class
+// Main class
 class SaveThePrincess {
     private Player player;
     private Scanner scanner;
     private CursedForest cursedForest;
+    private 
     
     // Constructor initializes game elements
     public SaveThePrincess() {
